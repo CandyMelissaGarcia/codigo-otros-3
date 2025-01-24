@@ -8,56 +8,35 @@ const productos = [
   {nombre: "Zapato rojo", tipo: "zapato", color: "rojo", img: "./zapato-rojo.jpg"}
 ]
 
-const li = document.getElementsByName("lista-de-productos")
-const $i = document.querySelector('.input');
+const li = document.querySelector('#lista-de-productos'); //se le agrega # para identificar un selector por ID
+const text = document.querySelector('.input');
+const button = document.getElementById('btnFilter'); //se crea variable para botón filtrar
 
-for (let i = 0; i < productos.length; i++) {
-  var d = document.createElement("div")
-  d.classList.add("producto")
+// se crea función para mostrar productos
+const showProductos = (productos) => {
+  li.innerHTML = '';
+  productos.forEach(producto => { // se utiliza forEach con insertAdjacentHTML para agregarlos en contenedores
+    li.insertAdjacentHTML('beforeend', `
+      <div class="producto">
+        <p class="titulo">${producto.nombre}</p>
+        <img src="${producto.img}" alt="${producto.nombre}">
+      </div>
+    `);
+  });
+};
 
-  var ti = document.createElement("p")
-  ti.classList.add("titulo")
-  ti.textContent = productos[i].nombre
+showProductos(productos)
+
+button.onclick = () => { //se cambia a una función de tipo flecha se elimina el while y se utilizan los métodos filter e includes
+  const filtrado = (productos = [], texto) => {
+    return productos.filter(item => item.tipo.includes(texto) || item.color.includes(texto));
+  }  
   
-  var imagen = document.createElement("img");
-  imagen.setAttribute('src', productos[i].img);
-
-  d.appendChild(ti)
-  d.appendChild(imagen)
-
-  li.appendChild(d)
-}
-
-displayProductos(productos)
-const botonDeFiltro = document.querySelector("button");
-
-botonDeFiltro.onclick = function() {
-  while (li.firstChild) {
-    li.removeChild(li.firstChild);
-  }
-
-  const texto = $i.value;
-  console.log(texto);
-  const productosFiltrados = filtrado(productos, texto );
-
-  for (let i = 0; i < productosFiltrados.length; i++) {
-    var d = document.createElement("div")
-    d.classList.add("producto")
+  const texto = text.value.trim().toLowerCase(); // añadí los métodos .trim y .toLowerCase para que el texto fuera en minúsculas y sin espacios
+    const productosFiltrados = productos.filter(producto =>
+      producto.tipo.includes(texto) || producto.color.includes(texto)
+    );
+    showProductos(productosFiltrados); // Muestra los productos filtrados
+  };
   
-    var ti = document.createElement("p")
-    ti.classList.add("titulo")
-    ti.textContent = productosFiltrados[i].nombre
-    
-    var imagen = document.createElement("img");
-    imagen.setAttribute('src', productosFiltrados[i].img);
-  
-    d.appendChild(ti)
-    d.appendChild(imagen)
-  
-    li.appendChild(d)
-  }
-}
 
-const filtrado = (productos = [], texto) => {
-  return productos.filter(item => item.tipo.includes(texto) || item.color.includes(texto));
-}  
